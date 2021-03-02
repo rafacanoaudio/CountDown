@@ -22,6 +22,19 @@ namespace Countdown_ASP.NET.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Type",
                 columns: table => new
                 {
@@ -48,6 +61,21 @@ namespace Countdown_ASP.NET.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ApiRequests",
                 columns: table => new
                 {
@@ -63,28 +91,6 @@ namespace Countdown_ASP.NET.Migrations
                         name: "FK_ApiRequests_ApiNames_ApiSiteNameId",
                         column: x => x.ApiSiteNameId,
                         principalTable: "ApiNames",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_UserRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "UserRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -156,25 +162,17 @@ namespace Countdown_ASP.NET.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    TypeId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
-                    VendorId = table.Column<int>(nullable: false),
-                    MultiVendorId = table.Column<int>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
+                    ImgLink = table.Column<string>(nullable: true),
                     ReleaseDate = table.Column<DateTime>(nullable: false),
-                    Verified = table.Column<bool>(nullable: false),
-                    ProductApiRequestUrlId = table.Column<int>(nullable: true)
+                    ProductApiRequestUrlId = table.Column<int>(nullable: true),
+                    ProductMultiVendorId = table.Column<int>(nullable: true),
+                    ProductSingleVendorId = table.Column<int>(nullable: true),
+                    ProductTypeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Products_MultiVendors_MultiVendorId",
-                        column: x => x.MultiVendorId,
-                        principalTable: "MultiVendors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Products_ApiRequests_ProductApiRequestUrlId",
                         column: x => x.ProductApiRequestUrlId,
@@ -182,41 +180,21 @@ namespace Countdown_ASP.NET.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Products_Type_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "Type",
+                        name: "FK_Products_MultiVendors_ProductMultiVendorId",
+                        column: x => x.ProductMultiVendorId,
+                        principalTable: "MultiVendors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Products_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Products_SingleVendors_VendorId",
-                        column: x => x.VendorId,
+                        name: "FK_Products_SingleVendors_ProductSingleVendorId",
+                        column: x => x.ProductSingleVendorId,
                         principalTable: "SingleVendors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Categories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    ProductId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Categories", x => x.Id);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Categories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
+                        name: "FK_Products_Type_ProductTypeId",
+                        column: x => x.ProductTypeId,
+                        principalTable: "Type",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -225,11 +203,6 @@ namespace Countdown_ASP.NET.Migrations
                 name: "IX_ApiRequests_ApiSiteNameId",
                 table: "ApiRequests",
                 column: "ApiSiteNameId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_ProductId",
-                table: "Categories",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MultiVendors_RoleId",
@@ -242,29 +215,24 @@ namespace Countdown_ASP.NET.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_MultiVendorId",
-                table: "Products",
-                column: "MultiVendorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductApiRequestUrlId",
                 table: "Products",
                 column: "ProductApiRequestUrlId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_TypeId",
+                name: "IX_Products_ProductMultiVendorId",
                 table: "Products",
-                column: "TypeId");
+                column: "ProductMultiVendorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_UserId",
+                name: "IX_Products_ProductSingleVendorId",
                 table: "Products",
-                column: "UserId");
+                column: "ProductSingleVendorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_VendorId",
+                name: "IX_Products_ProductTypeId",
                 table: "Products",
-                column: "VendorId");
+                column: "ProductTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SingleVendors_ProductMultiVendorId",
@@ -280,11 +248,6 @@ namespace Countdown_ASP.NET.Migrations
                 name: "IX_SingleVendors_UserId",
                 table: "SingleVendors",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
-                table: "Users",
-                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -299,10 +262,10 @@ namespace Countdown_ASP.NET.Migrations
                 name: "ApiRequests");
 
             migrationBuilder.DropTable(
-                name: "Type");
+                name: "SingleVendors");
 
             migrationBuilder.DropTable(
-                name: "SingleVendors");
+                name: "Type");
 
             migrationBuilder.DropTable(
                 name: "ApiNames");
@@ -311,10 +274,10 @@ namespace Countdown_ASP.NET.Migrations
                 name: "MultiVendors");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "UserRoles");
 
             migrationBuilder.DropTable(
-                name: "UserRoles");
+                name: "Users");
         }
     }
 }

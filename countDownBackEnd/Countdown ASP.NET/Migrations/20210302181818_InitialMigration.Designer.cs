@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Countdown_ASP.NET.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    [Migration("20210208214708_InitialMigration")]
+    [Migration("20210302181818_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,19 @@ namespace Countdown_ASP.NET.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("ImgLink")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("MultiVendorId")
+                    b.Property<int?>("ProductApiRequestUrlId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductApiRequestUrlId")
+                    b.Property<int?>("ProductMultiVendorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductSingleVendorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProductTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ReleaseDate")
@@ -40,29 +46,15 @@ namespace Countdown_ASP.NET.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("TypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VendorId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Verified")
-                        .HasColumnType("tinyint(1)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("MultiVendorId");
 
                     b.HasIndex("ProductApiRequestUrlId");
 
-                    b.HasIndex("TypeId");
+                    b.HasIndex("ProductMultiVendorId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ProductSingleVendorId");
 
-                    b.HasIndex("VendorId");
+                    b.HasIndex("ProductTypeId");
 
                     b.ToTable("Products");
                 });
@@ -109,12 +101,7 @@ namespace Countdown_ASP.NET.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<long?>("ProductId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Categories");
                 });
@@ -201,12 +188,7 @@ namespace Countdown_ASP.NET.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -227,33 +209,21 @@ namespace Countdown_ASP.NET.Migrations
 
             modelBuilder.Entity("Countdown_ASP.NET.Models.Product", b =>
                 {
-                    b.HasOne("Countdown_ASP.NET.Models.ProductMultiVendor", "MultiVendor")
-                        .WithMany("Products")
-                        .HasForeignKey("MultiVendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Countdown_ASP.NET.Models.ProductApiRequestUrl", null)
                         .WithMany("Products")
                         .HasForeignKey("ProductApiRequestUrlId");
 
-                    b.HasOne("Countdown_ASP.NET.Models.ProductType", "Type")
+                    b.HasOne("Countdown_ASP.NET.Models.ProductMultiVendor", null)
                         .WithMany("Products")
-                        .HasForeignKey("TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductMultiVendorId");
 
-                    b.HasOne("Countdown_ASP.NET.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Countdown_ASP.NET.Models.ProductSingleVendor", "Vendor")
+                    b.HasOne("Countdown_ASP.NET.Models.ProductSingleVendor", null)
                         .WithMany("Products")
-                        .HasForeignKey("VendorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductSingleVendorId");
+
+                    b.HasOne("Countdown_ASP.NET.Models.ProductType", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ProductTypeId");
                 });
 
             modelBuilder.Entity("Countdown_ASP.NET.Models.ProductApiRequestUrl", b =>
@@ -263,13 +233,6 @@ namespace Countdown_ASP.NET.Migrations
                         .HasForeignKey("ApiSiteNameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Countdown_ASP.NET.Models.ProductCategory", b =>
-                {
-                    b.HasOne("Countdown_ASP.NET.Models.Product", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("ProductId");
                 });
 
             modelBuilder.Entity("Countdown_ASP.NET.Models.ProductMultiVendor", b =>
@@ -302,15 +265,6 @@ namespace Countdown_ASP.NET.Migrations
                     b.HasOne("Countdown_ASP.NET.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Countdown_ASP.NET.Models.User", b =>
-                {
-                    b.HasOne("Countdown_ASP.NET.Models.UserRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

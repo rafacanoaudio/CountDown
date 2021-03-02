@@ -19,7 +19,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/movies',
+    redirectTo: '/dashboard',
     pathMatch: 'full'
   },
   {

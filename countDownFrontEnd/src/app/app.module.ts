@@ -21,6 +21,7 @@ import { UserProductsComponent } from './dashboard/user-products/user-products.c
 import { UserProductComponent } from './dashboard/user-products/user-product/user-product.component';
 import { UserProductListComponent } from './dashboard/user-products/user-product-list/user-product-list.component';
 import { UserProductService } from './dashboard/shared/user-product.service';
+import { AddOwnEventComponent} from './add-own-event/add-own-event.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UserProductService } from './dashboard/shared/user-product.service';
     TosComponent,
     UserProductsComponent,
     UserProductComponent,
-    UserProductListComponent
+    UserProductListComponent,
+    AddOwnEventComponent
   ],
   imports: [
     BrowserModule,
@@ -51,3 +53,4 @@ import { UserProductService } from './dashboard/shared/user-product.service';
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
